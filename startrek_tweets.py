@@ -1,8 +1,8 @@
 import argparse
 import json
-import tweepy
 import sqlite3
 from sqlite3 import Error
+from ShiningArmor import twitter
 
 
 
@@ -25,53 +25,6 @@ def get_cmd_line_args():
     return db_file, tokens_file
 
 
-
-
-def get_tokens(tokens_file):
-    """ 
-    Get Twitter tokens
-    """
-
-    try:
-        f =  open(tokens_file, mode='r')
-        tokens = json.load(f)
-
-    except FileNotFoundError as err:
-        raise err
-
-    except IOError as err:
-        raise err
-
-    finally:
-        f.close()
-
-    return tokens
-
-
-
-
-def post_the_tweet(tokens, tweet):
-    """
-    Post the STARTREK quotes as tweets
-    NOTE: tokens can be found under "Apps > RainBowDashBOT"
-    """
-    status = 0
-
-    try:
-        auth = tweepy.OAuthHandler(tokens['consumer_api_key'], \
-                tokens['consumer_api_key_secret'])
-
-        auth.set_access_token(tokens['access_token'], \
-                tokens['access_token_secret'])
-
-        api = tweepy.API(auth)
-
-        api.update_status(tweet)
-    except Error as e:
-        print(e)
-        status = 1
-
-    return status
 
 
 def create_db_connection(db_file):
@@ -179,11 +132,12 @@ def main():
     (tweet, record_id) = get_startrek_quotes(db_conn)
 
     if tweet:
-        # Get TWITTER tokens
-        tokens = get_tokens(tokens_file)
+        # Get TWITTER tokens and authenticate
+        tokens = twitter.tokens(tokens_file)
+        api = twitter.auth(tokens)
 
         # Post the TWEET
-        status = post_the_tweet(tokens, tweet)
+        status = twitter.tweet(api, tweet)
 
         # On successful tweet, update the DB
         if status == 0:
