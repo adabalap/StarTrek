@@ -75,8 +75,9 @@ def get_startrek_quotes(db_conn):
     """
     Current lenght of the tweet's is 280 characters
     """
-    while (len(f'{row}') > 280):
+    while (len(f'{row}') > 249):
         row = cur.fetchone()
+    
 
     if row:
         # 0: record id
