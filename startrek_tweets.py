@@ -61,14 +61,13 @@ def get_startrek_quotes(db_conn):
     :param conn: the Connection object
     :return: tweet, record_id
     """
+    #('Mr. Spock', 'Captain James T. Kirk', \
+    # 'Dr. McCoy', 'Mr. Scott')             \
+
     cur = db_conn.cursor()
     cur.execute("SELECT rowid, *                        \
                  FROM startrek                          \
-                 WHERE character IN                     \
-                 ('Mr. Spock', 'Captain James T. Kirk', \
-                  'Dr. McCoy', 'Mr. Scott')             \
-                 AND                                    \
-                 tweet == 0")
+                 WHERE tweet == 0")
 
     row = cur.fetchone()
 
