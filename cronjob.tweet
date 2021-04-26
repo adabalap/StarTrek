@@ -1,0 +1,20 @@
+#!/bin/bash 
+#
+# A wrapper script to set the 'virtual environment' and post the tweets 
+# This script should be called from the user cronjob
+#
+
+. ${HOME}/Source/StarTrek/venv/bin/activate
+
+python ${HOME}/Source/StarTrek/startrek_tweets.py 	\
+	-f ${HOME}/Source/StarTrek/startrek.DB		\
+	-t ${HOME}/Source//StarTrek/cfg/twitter_tokens.json
+
+if [[ $? == 0 ]]
+then
+        echo "`date`: ${0} : Posted tweet"
+else
+        echo "`date`: ${0} : rc = ${?}, Check something went wrong"
+fi
+
+deactivate
